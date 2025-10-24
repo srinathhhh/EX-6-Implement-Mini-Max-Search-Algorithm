@@ -1,6 +1,6 @@
 <h1>ExpNo 6 : Implement Minimax Search Algorithm for a Simple TIC-TAC-TOE game</h1> 
-<h3>Name:      </h3>
-<h3>Register Number:       </h3>
+<h3>Name:Srinath N     </h3>
+<h3>Register Number:2305003009     </h3>
 <H3>Aim:</H3>
 <p>
     Implement Minimax Search Algorithm for a Simple TIC-TAC-TOE game
@@ -103,50 +103,112 @@ def minimax(game)
 end
 ## program
 ```python
-import math
+import tkinter as tk
+self.board = [""] * 9
+self.game_over = False
+self.status_label.config(text="Your turn (X)")
+for b in self.buttons:
+b.config(text="", state=tk.NORMAL)
 
-def minimax(curDepth, nodeIndex, maxTurn, scores, targetDepth, alpha, beta):
-    # Base case: targetDepth reached
-    if curDepth == targetDepth:
-        return scores[nodeIndex]
 
-    if maxTurn:
-        maxEval = -math.inf  # Initialize maximum evaluation
-        # Maximizing player's turn
-        for i in range(2):  # There are two children for each node
-            eval = minimax(curDepth + 1, nodeIndex * 2 + i, False, scores, targetDepth, alpha, beta)
-            maxEval = max(maxEval, eval)
-            alpha = max(alpha, eval)  # Update alpha
-            if beta <= alpha:  # Beta pruning
-                break
-        return maxEval
-    else:
-        minEval = math.inf  # Initialize minimum evaluation
-        # Minimizing player's turn
-        for i in range(2):  # There are two children for each node
-            eval = minimax(curDepth + 1, nodeIndex * 2 + i, True, scores, targetDepth, alpha, beta)
-            minEval = min(minEval, eval)
-            beta = min(beta, eval)  # Update beta
-            if beta <= alpha:  # Alpha pruning
-                break
-        return minEval
 
- scores = [3, 5, 6, 9, 1, 2, 0, -1]
-    targetDepth = 3  # Example target depth
 
-    # Start Minimax from the root with initial alpha and beta values
-    best_value = minimax(0, 0, True, scores, targetDepth, -math.inf, math.inf)
-    print("The optimal value is:", best_value)
+# Game logic helpers
+WIN_COMBINATIONS = [
+(0, 1, 2), (3, 4, 5), (6, 7, 8), # rows
+(0, 3, 6), (1, 4, 7), (2, 5, 8), # columns
+(0, 4, 8), (2, 4, 6) # diagonals
+]
+
+
+
+
+def check_winner(board):
+"""Return the winner ('X' or 'O') or None if no winner yet."""
+for a, b, c in WIN_COMBINATIONS:
+if board[a] and board[a] == board[b] == board[c]:
+return board[a]
+return None
+
+
+
+
+def is_board_full(board):
+return all(cell != "" for cell in board)
+
+
+
+
+def minimax(board, depth, is_maximizing):
+"""
+Minimax algorithm with simple depth-based scoring to prefer faster wins.
+Returns an integer score.
+"""
+winner = check_winner(board)
+if winner == AI:
+return 10 - depth
+elif winner == HUMAN:
+return depth - 10
+elif is_board_full(board):
+return 0
+
+
+if is_maximizing:
+best_score = -999
+for i in range(9):
+if board[i] == "":
+board[i] = AI
+score = minimax(board, depth + 1, False)
+board[i] = ""
+if score > best_score:
+best_score = score
+return best_score
+else:
+best_score = 999
+for i in range(9):
+if board[i] == "":
+board[i] = HUMAN
+score = minimax(board, depth + 1, True)
+board[i] = ""
+if score < best_score:
+best_score = score
+return best_score
+
+
+
+
+def best_move(board):
+"""Return the index (0..8) of best move for AI, or None if board full."""
+if is_board_full(board) or check_winner(board):
+return None
+
+
+best_score = -999
+move = None
+for i in range(9):
+if board[i] == "":
+board[i] = AI
+score = minimax(board, 0, False)
+board[i] = ""
+if score > best_score:
+best_score = score
+move = i
+return move
+
+
+
+
+if __name__ == "__main__":
+root = tk.Tk()
+app = TicTacToeGUI(root)
+root.mainloop()
 ```
 
 <hr>
 <h2>Sample Input and Output</h2>
 
-![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/6b668685-8bcc-43c5-b5c2-ddd43f3da84a)
-![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/8ca1b08a-8312-4ef5-89df-e69b7b2c3fa2)
-![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/dc06427a-d4ce-43a1-95bd-9acfaefac323)
-![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/a8a27e2a-6fd4-46a2-afb5-6d27b8556702)
-![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/a2acb6a1-ed8e-42e5-8968-fe805e4b0255)
+<img width="396" height="528" alt="Screenshot 2025-10-24 084110" src="https://github.com/user-attachments/assets/2f22193c-899e-41f1-bb3b-47b74ba962fd" />
+
 
 <hr>
 <h2>Result:</h2>
